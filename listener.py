@@ -41,7 +41,7 @@ def main():
     port = 8889
     print('Listening on localhost:%s' % port)
     server = HTTPServer(('', port), RequestHandler)
-    server.socket = ssl.wrap_socket(server.socket, certfile='ac14k_m.pem', server_side=True)
+    server.socket = ssl.wrap_socket(server.socket, certfile='cert.pem', server_side=True)
     server.serve_forever()
 
 if __name__ == "__main__":
