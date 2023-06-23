@@ -15,7 +15,7 @@ This will return a Authorization Bearer. Replace WW in Step 5.
 Step 5: To confirm it worked, you should be able to now run the following and get json back;
 `curl -m 8 -k -H "Content-Type: application/json" -H "Authorization: Bearer WWWWW" --cert cert.pem --insecure -X GET https://192.168.ZZ.ZZ:8888/devices/0/operation`
 
-Step 6: Add the following to `sensors.yaml`
+Step 6 (prior to HA 2023.6.2): Add the following to `sensors.yaml`
 
     # Samsung Dryer as an example, should be the same for Airconditioner, Washer, and Dishwasher
     - platform: command_line
@@ -28,3 +28,19 @@ Step 6: Add the following to `sensors.yaml`
         - progress
         - progressPercentage
         - remainingTime
+
+
+
+Step 6 (2023.6.2 onward): Add the following to `command_line.yaml`
+
+    # Samsung Dryer as an example, should be the same for Airconditioner, Washer, and Dishwasher
+    - sensor:
+        command: curl -m 8 -k -H 'Content-Type:application/json' -H 'Authorization:Bearer WWWWW' --cert /ssl/cert.pem --insecure --silent -X GET https://192.168.ZZ.ZZ:8888/devices/0/operation | sed -r -e 's/:\{/:\{\},/' -e 's/\}\}/\}/'
+        scan_interval: 30
+        name: "Dryer"
+        value_template: "{{ value_json['progress'] }}"
+        json_attributes:
+          - state
+          - progress
+          - progressPercentage
+          - remainingTime
